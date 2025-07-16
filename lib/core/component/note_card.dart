@@ -11,31 +11,32 @@ class NoteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(7),
       width: double.maxFinite,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: AppColor.secondaryColor,
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Expanded(
-            child: Text(
+          if (titleText.isNotEmpty)
+            Text(
               titleText,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge!.copyWith(overflow: TextOverflow.clip),
             ),
-          ),
           10.toVert,
-          Expanded(
-            child: Text(
+          if (noteText.isNotEmpty)
+            Text(
               noteText,
+
               style: Theme.of(
                 context,
               ).textTheme.bodyLarge!.copyWith(overflow: TextOverflow.clip),
             ),
-          ),
         ],
       ),
     );

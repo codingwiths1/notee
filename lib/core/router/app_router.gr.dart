@@ -28,18 +28,48 @@ class CreateNoteRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [EditNotePage]
-class EditNoteRoute extends PageRouteInfo<void> {
-  const EditNoteRoute({List<PageRouteInfo>? children})
-    : super(EditNoteRoute.name, initialChildren: children);
+class EditNoteRoute extends PageRouteInfo<EditNoteRouteArgs> {
+  EditNoteRoute({Key? key, int? index, List<PageRouteInfo>? children})
+    : super(
+        EditNoteRoute.name,
+        args: EditNoteRouteArgs(key: key, index: index),
+        initialChildren: children,
+      );
 
   static const String name = 'EditNoteRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const EditNotePage();
+      final args = data.argsAs<EditNoteRouteArgs>(
+        orElse: () => const EditNoteRouteArgs(),
+      );
+      return EditNotePage(key: args.key, index: args.index);
     },
   );
+}
+
+class EditNoteRouteArgs {
+  const EditNoteRouteArgs({this.key, this.index});
+
+  final Key? key;
+
+  final int? index;
+
+  @override
+  String toString() {
+    return 'EditNoteRouteArgs{key: $key, index: $index}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EditNoteRouteArgs) return false;
+    return key == other.key && index == other.index;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ index.hashCode;
 }
 
 /// generated route for

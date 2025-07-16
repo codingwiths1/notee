@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
 import 'package:notee/create_note_page.dart';
 import 'package:notee/edit_note_page.dart';
 import 'package:notee/features/home/presentation/pages/home_page.dart';
