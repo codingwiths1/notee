@@ -29,47 +29,73 @@ class CreateNoteRoute extends PageRouteInfo<void> {
 /// generated route for
 /// [EditNotePage]
 class EditNoteRoute extends PageRouteInfo<EditNoteRouteArgs> {
-  EditNoteRoute({Key? key, int? index, List<PageRouteInfo>? children})
-    : super(
-        EditNoteRoute.name,
-        args: EditNoteRouteArgs(key: key, index: index),
-        initialChildren: children,
-      );
+  EditNoteRoute({
+    Key? key,
+    required String titleText,
+    required String noteText,
+    required int id,
+    List<PageRouteInfo>? children,
+  }) : super(
+         EditNoteRoute.name,
+         args: EditNoteRouteArgs(
+           key: key,
+           titleText: titleText,
+           noteText: noteText,
+           id: id,
+         ),
+         initialChildren: children,
+       );
 
   static const String name = 'EditNoteRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<EditNoteRouteArgs>(
-        orElse: () => const EditNoteRouteArgs(),
+      final args = data.argsAs<EditNoteRouteArgs>();
+      return EditNotePage(
+        key: args.key,
+        titleText: args.titleText,
+        noteText: args.noteText,
+        id: args.id,
       );
-      return EditNotePage(key: args.key, index: args.index);
     },
   );
 }
 
 class EditNoteRouteArgs {
-  const EditNoteRouteArgs({this.key, this.index});
+  const EditNoteRouteArgs({
+    this.key,
+    required this.titleText,
+    required this.noteText,
+    required this.id,
+  });
 
   final Key? key;
 
-  final int? index;
+  final String titleText;
+
+  final String noteText;
+
+  final int id;
 
   @override
   String toString() {
-    return 'EditNoteRouteArgs{key: $key, index: $index}';
+    return 'EditNoteRouteArgs{key: $key, titleText: $titleText, noteText: $noteText, id: $id}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! EditNoteRouteArgs) return false;
-    return key == other.key && index == other.index;
+    return key == other.key &&
+        titleText == other.titleText &&
+        noteText == other.noteText &&
+        id == other.id;
   }
 
   @override
-  int get hashCode => key.hashCode ^ index.hashCode;
+  int get hashCode =>
+      key.hashCode ^ titleText.hashCode ^ noteText.hashCode ^ id.hashCode;
 }
 
 /// generated route for

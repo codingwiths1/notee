@@ -2,60 +2,41 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:notee/app_widget.dart';
 import 'package:notee/core/extention/extention.dart';
 import 'package:notee/core/theme/theme.dart';
 import 'package:notee/features/home/bloc/app_cubit.dart';
 import 'package:notee/features/home/bloc/app_state.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 @RoutePage()
-class EditNotePage extends StatefulWidget {
-  const EditNotePage({super.key, this.index});
-  final int? index;
-  @override
-  State<EditNotePage> createState() => _EditNotePageState();
-}
+class EditNotePage extends StatelessWidget {
+  const EditNotePage({
+    super.key,
+    required this.titleText,
+    required this.noteText,
+    required this.id,
+  });
+  final String titleText;
+  final String noteText;
+  final int id;
 
-class _EditNotePageState extends State<EditNotePage> {
-  final TextEditingController title = TextEditingController();
-  final TextEditingController note = TextEditingController();
-  @override
-  void initState() {
-    final String titleText =
-        context.read<AppCubit>().state.noteList[widget.index!]["TITLE"] ?? "";
-    title.text = titleText.trim();
-
-    final String noteText =
-        context.read<AppCubit>().state.noteList[widget.index!]["NOTE"] ?? "";
-    note.text = noteText.trim();
-
-    title.addListener(() {
-      if (title.text.trim().isNotEmpty) {
-        context.read<AppCubit>().updateState(isTrue: true);
-      } else {
-        context.read<AppCubit>().updateState(isTrue: false);
-      }
-    });
-    note.addListener(() {
-      if (note.text.trim().isNotEmpty) {
-        context.read<AppCubit>().updateState(isTrue: true);
-      } else {
-        context.read<AppCubit>().updateState(isTrue: false);
-      }
-    });
-    super.initState();
-  }
-
-  @override
-  dispose() {
-    title.dispose();
-    note.dispose();
-    super.dispose();
-  }
-
+  // @override
   @override
   Widget build(BuildContext context) {
+    final TextEditingController title = TextEditingController(text: titleText);
+
+    final TextEditingController note = TextEditingController(text: noteText);
     return Scaffold(
       appBar: CupertinoNavigationBar(
+        trailing: IconButton(
+          onPressed: () async {
+            await Supabase.instance.client.from("notes").delete().eq("id", id);
+            appRouter.navigatorKey.currentContext!.router.back();
+          },
+          icon: Icon(Iconsax.trash, size: 27, color: AppColor.red),
+        ),
         transitionBetweenRoutes: true,
         automaticallyImplyLeading: true,
         border: Border.all(color: AppColor.transparant),
@@ -105,20 +86,18 @@ class _EditNotePageState extends State<EditNotePage> {
         builder: (context, state) {
           return FloatingActionButton(
             shape: const CircleBorder(),
-            backgroundColor: state.isTrue == true
-                ? AppColor.blue
-                : AppColor.grey400,
+            backgroundColor: AppColor.blue,
             foregroundColor: AppColor.white,
-            onPressed: () {
+            onPressed: () async {
               if (title.text.trim().isNotEmpty || note.text.trim().isNotEmpty) {
-                context.read<AppCubit>().editNote(
-                  index: widget.index!,
-                  updatedNotes: {
-                    "TITLE": title.text.trim(),
-                    "NOTE": note.text.trim(),
-                  },
-                );
-                context.router.back();
+                await Supabase.instance.client
+                    .from("notes")
+                    .update({
+                      "title": title.text.trim(),
+                      "note": note.text.trim(),
+                    })
+                    .eq("id", id);
+                appRouter.navigatorKey.currentContext!.router.back();
               }
             },
             child: const Icon(Icons.done),

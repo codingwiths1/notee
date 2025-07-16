@@ -4,50 +4,23 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notee/app_widget.dart';
 import 'package:notee/core/extention/extention.dart';
 import 'package:notee/core/theme/theme.dart';
 import 'package:notee/features/home/bloc/app_cubit.dart';
 import 'package:notee/features/home/bloc/app_state.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 @RoutePage()
-class CreateNotePage extends StatefulWidget {
+class CreateNotePage extends StatelessWidget {
   const CreateNotePage({super.key});
 
   @override
-  State<CreateNotePage> createState() => _CreateNotePageState();
-}
-
-class _CreateNotePageState extends State<CreateNotePage> {
-  final TextEditingController title = TextEditingController();
-  final TextEditingController note = TextEditingController();
-  @override
-  initState() {
-    title.addListener(() {
-      if (title.text.trim().isNotEmpty) {
-        context.read<AppCubit>().updateState(isTrue: true);
-      } else {
-        context.read<AppCubit>().updateState(isTrue: false);
-      }
-    });
-    note.addListener(() {
-      if (note.text.trim().isNotEmpty) {
-        context.read<AppCubit>().updateState(isTrue: true);
-      } else {
-        context.read<AppCubit>().updateState(isTrue: false);
-      }
-    });
-    super.initState();
-  }
-
-  @override
-  dispose() {
-    title.dispose();
-    note.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final TextEditingController title = TextEditingController();
+
+    final TextEditingController note = TextEditingController();
     return Scaffold(
       appBar: CupertinoNavigationBar(
         transitionBetweenRoutes: true,
@@ -99,16 +72,20 @@ class _CreateNotePageState extends State<CreateNotePage> {
         builder: (context, state) {
           return FloatingActionButton(
             shape: const CircleBorder(),
-            backgroundColor: state.isTrue == true
-                ? AppColor.blue
-                : AppColor.grey400,
+            backgroundColor: AppColor.blue,
+
             foregroundColor: AppColor.white,
-            onPressed: () {
+            onPressed: () async {
               if (title.text.trim().isNotEmpty || note.text.trim().isNotEmpty) {
-                context.read<AppCubit>().updateText(
-                  notes: {"TITLE": title.text.trim(), "NOTE": note.text.trim()},
-                );
-                context.router.back();
+                // context.read<AppCubit>().updateText(
+                //   notes: {"TITLE": title.text.trim(), "NOTE": note.text.trim()},
+                // );
+                log('TAPPED');
+                await Supabase.instance.client.from("notes").insert({
+                  "title": title.text.trim(),
+                  "note": note.text.trim(),
+                });
+                appRouter.navigatorKey.currentContext!.router.back();
                 log('SAVED');
               }
             },

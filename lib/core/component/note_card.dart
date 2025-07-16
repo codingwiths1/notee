@@ -23,19 +23,21 @@ class NoteCard extends StatelessWidget {
         children: <Widget>[
           if (titleText.isNotEmpty)
             Text(
+              maxLines: 3,
               titleText,
               style: Theme.of(
                 context,
-              ).textTheme.titleLarge!.copyWith(overflow: TextOverflow.clip),
+              ).textTheme.titleLarge!.copyWith(overflow: TextOverflow.ellipsis),
             ),
           10.toVert,
           if (noteText.isNotEmpty)
             Text(
+              maxLines: 9,
               noteText,
 
               style: Theme.of(
                 context,
-              ).textTheme.bodyLarge!.copyWith(overflow: TextOverflow.clip),
+              ).textTheme.bodyLarge!.copyWith(overflow: TextOverflow.ellipsis),
             ),
         ],
       ),
