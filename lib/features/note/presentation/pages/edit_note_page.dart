@@ -1,28 +1,42 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:notee/app_widget.dart';
 import 'package:notee/core/extention/extention.dart';
 import 'package:notee/core/theme/theme.dart';
-import 'package:notee/features/home/bloc/app_cubit.dart';
-import 'package:notee/features/home/bloc/app_state.dart';
+import 'package:notee/features/note/presentation/bloc/app_cubit.dart';
+import 'package:notee/features/note/presentation/bloc/app_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 @RoutePage()
-class CreateNotePage extends StatelessWidget {
-  const CreateNotePage({super.key});
+class EditNotePage extends StatelessWidget {
+  const EditNotePage({
+    super.key,
+    required this.titleText,
+    required this.noteText,
+    required this.id,
+  });
+  final String titleText;
+  final String noteText;
+  final int id;
 
-  @override
+  // @override
   @override
   Widget build(BuildContext context) {
-    final TextEditingController title = TextEditingController();
+    final TextEditingController title = TextEditingController(text: titleText);
 
-    final TextEditingController note = TextEditingController();
+    final TextEditingController note = TextEditingController(text: noteText);
     return Scaffold(
       appBar: CupertinoNavigationBar(
+        trailing: IconButton(
+          onPressed: () async {
+            await Supabase.instance.client.from("notes").delete().eq("id", id);
+            appRouter.navigatorKey.currentContext!.router.back();
+          },
+          icon: Icon(Iconsax.trash, size: 27, color: AppColor.red),
+        ),
         transitionBetweenRoutes: true,
         automaticallyImplyLeading: true,
         border: Border.all(color: AppColor.transparant),
@@ -73,20 +87,17 @@ class CreateNotePage extends StatelessWidget {
           return FloatingActionButton(
             shape: const CircleBorder(),
             backgroundColor: AppColor.blue,
-
             foregroundColor: AppColor.white,
             onPressed: () async {
               if (title.text.trim().isNotEmpty || note.text.trim().isNotEmpty) {
-                // context.read<AppCubit>().updateText(
-                //   notes: {"TITLE": title.text.trim(), "NOTE": note.text.trim()},
-                // );
-                log('TAPPED');
-                await Supabase.instance.client.from("notes").insert({
-                  "title": title.text.trim(),
-                  "note": note.text.trim(),
-                });
+                await Supabase.instance.client
+                    .from("notes")
+                    .update({
+                      "title": title.text.trim(),
+                      "note": note.text.trim(),
+                    })
+                    .eq("id", id);
                 appRouter.navigatorKey.currentContext!.router.back();
-                log('SAVED');
               }
             },
             child: const Icon(Icons.done),

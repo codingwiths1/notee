@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notee/features/home/bloc/app_state.dart';
+import 'package:notee/features/note/presentation/bloc/app_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AppCubit extends Cubit<AppState> {

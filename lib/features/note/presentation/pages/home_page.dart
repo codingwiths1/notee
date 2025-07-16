@@ -8,8 +8,8 @@ import 'package:notee/core/extention/extention.dart';
 import 'package:notee/core/router/app_router.dart';
 import 'package:notee/core/theme/theme.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:notee/features/home/bloc/app_cubit.dart';
-import 'package:notee/features/home/bloc/app_state.dart';
+import 'package:notee/features/note/presentation/bloc/app_cubit.dart';
+import 'package:notee/features/note/presentation/bloc/app_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 @RoutePage()
