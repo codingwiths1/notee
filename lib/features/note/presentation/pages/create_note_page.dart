@@ -77,19 +77,29 @@ class CreateNotePage extends StatelessWidget {
             foregroundColor: AppColor.white,
             onPressed: () async {
               if (title.text.trim().isNotEmpty || note.text.trim().isNotEmpty) {
+                context.read<AppCubit>().updateState(isTrue: true);
                 // context.read<AppCubit>().updateText(
                 //   notes: {"TITLE": title.text.trim(), "NOTE": note.text.trim()},
                 // );
-                log('TAPPED');
+
                 await Supabase.instance.client.from("notes").insert({
                   "title": title.text.trim(),
                   "note": note.text.trim(),
                 });
                 appRouter.navigatorKey.currentContext!.router.back();
-                log('SAVED');
+
+                appRouter.navigatorKey.currentContext!
+                    .read<AppCubit>()
+                    .updateState(isTrue: false);
               }
             },
-            child: const Icon(Icons.done),
+            child: state.isTrue
+                ? SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(color: AppColor.white),
+                  )
+                : const Icon(Icons.done),
           );
         },
       ),

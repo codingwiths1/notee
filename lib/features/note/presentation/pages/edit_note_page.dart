@@ -32,10 +32,24 @@ class EditNotePage extends StatelessWidget {
       appBar: CupertinoNavigationBar(
         trailing: IconButton(
           onPressed: () async {
+            context.read<AppCubit>().updateState(delete: true);
             await Supabase.instance.client.from("notes").delete().eq("id", id);
             appRouter.navigatorKey.currentContext!.router.back();
+            appRouter.navigatorKey.currentContext!.read<AppCubit>().updateState(
+              delete: false,
+            );
           },
-          icon: Icon(Iconsax.trash, size: 27, color: AppColor.red),
+          icon: BlocBuilder<AppCubit, AppState>(
+            builder: (context, state) {
+              return state.delete
+                  ? SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(color: AppColor.blue),
+                    )
+                  : Icon(Iconsax.trash, size: 27, color: AppColor.red);
+            },
+          ),
         ),
         transitionBetweenRoutes: true,
         automaticallyImplyLeading: true,
@@ -90,6 +104,7 @@ class EditNotePage extends StatelessWidget {
             foregroundColor: AppColor.white,
             onPressed: () async {
               if (title.text.trim().isNotEmpty || note.text.trim().isNotEmpty) {
+                context.read<AppCubit>().updateState(isTrue: true);
                 await Supabase.instance.client
                     .from("notes")
                     .update({
@@ -98,9 +113,18 @@ class EditNotePage extends StatelessWidget {
                     })
                     .eq("id", id);
                 appRouter.navigatorKey.currentContext!.router.back();
+                appRouter.navigatorKey.currentContext!
+                    .read<AppCubit>()
+                    .updateState(isTrue: false);
               }
             },
-            child: const Icon(Icons.done),
+            child: state.isTrue
+                ? SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(color: AppColor.white),
+                  )
+                : const Icon(Icons.done),
           );
         },
       ),

@@ -3,7 +3,7 @@ import 'package:notee/features/note/presentation/bloc/app_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AppCubit extends Cubit<AppState> {
-  AppCubit() : super(AppState(noteList: [], isTrue: false));
+  AppCubit() : super(AppState(noteList: [], isTrue: false, delete: false));
 
   getData(List<Map<String, dynamic>> data) {
     emit(state.copyWith(noteList: data));
@@ -42,7 +42,7 @@ class AppCubit extends Cubit<AppState> {
     emit(state.copyWith(noteList: updatedList));
   }
 
-  updateState({required bool isTrue}) {
-    emit(state.copyWith(isTrue: isTrue));
+  updateState({bool? isTrue, bool? delete}) {
+    emit(state.copyWith(isTrue: isTrue, delete: delete));
   }
 }
