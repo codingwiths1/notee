@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notee/app_widget.dart';
 import 'package:notee/core/extention/extention.dart';
 import 'package:notee/core/theme/theme.dart';
-import 'package:notee/features/note/presentation/bloc/app_cubit.dart';
-import 'package:notee/features/note/presentation/bloc/app_state.dart';
+import 'package:notee/features/note/presentation/note_bloc/note_cubit.dart';
+import 'package:notee/features/note/presentation/note_bloc/note_state.dart';
 
 @RoutePage()
 class CreateNotePage extends StatelessWidget {
@@ -18,7 +18,7 @@ class CreateNotePage extends StatelessWidget {
     final TextEditingController title = TextEditingController();
     final TextEditingController note = TextEditingController();
 
-    final AppCubit contxt = context.read<AppCubit>();
+    final NoteCubit contxt = context.read<NoteCubit>();
 
     return Scaffold(
       appBar: CupertinoNavigationBar(
@@ -67,7 +67,7 @@ class CreateNotePage extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: BlocBuilder<AppCubit, AppState>(
+      floatingActionButton: BlocBuilder<NoteCubit, NoteState>(
         builder: (context, state) {
           return FloatingActionButton(
             shape: const CircleBorder(),
@@ -76,19 +76,11 @@ class CreateNotePage extends StatelessWidget {
             foregroundColor: AppColor.white,
             onPressed: () async {
               if (title.text.trim().isNotEmpty || note.text.trim().isNotEmpty) {
-                context.read<AppCubit>().updateState(isTrue: true);
-                // context.read<AppCubit>().updateText(
-                //   notes: {"TITLE": title.text.trim(), "NOTE": note.text.trim()},
-                // );
                 contxt.creatnewnote(title: title.text, note: note.text);
                 appRouter.navigatorKey.currentContext!.router.back();
-
-                appRouter.navigatorKey.currentContext!
-                    .read<AppCubit>()
-                    .updateState(isTrue: false);
               }
             },
-            child: state.isTrue
+            child: state.loading
                 ? SizedBox(
                     height: 20,
                     width: 20,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:notee/app_widget.dart';
 import 'package:notee/core/theme/theme.dart';
-import 'package:notee/features/note/presentation/bloc/app_cubit.dart';
+import 'package:notee/features/note/presentation/note_bloc/note_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -21,7 +21,7 @@ void main() async {
   );
 
   /// INIT AUTH
-  final AppCubit appcubit = AppCubit();
+  final NoteCubit appcubit = NoteCubit();
   await appcubit.initAuth();
 
   /// RUN APP
