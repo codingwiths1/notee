@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +7,6 @@ import 'package:notee/core/extention/extention.dart';
 import 'package:notee/core/theme/theme.dart';
 import 'package:notee/features/note/presentation/bloc/app_cubit.dart';
 import 'package:notee/features/note/presentation/bloc/app_state.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 @RoutePage()
 class CreateNotePage extends StatelessWidget {
@@ -19,8 +16,10 @@ class CreateNotePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextEditingController title = TextEditingController();
-
     final TextEditingController note = TextEditingController();
+
+    final AppCubit contxt = context.read<AppCubit>();
+
     return Scaffold(
       appBar: CupertinoNavigationBar(
         transitionBetweenRoutes: true,
@@ -81,11 +80,7 @@ class CreateNotePage extends StatelessWidget {
                 // context.read<AppCubit>().updateText(
                 //   notes: {"TITLE": title.text.trim(), "NOTE": note.text.trim()},
                 // );
-
-                await Supabase.instance.client.from("notes").insert({
-                  "title": title.text.trim(),
-                  "note": note.text.trim(),
-                });
+                contxt.creatnewnote(title: title.text, note: note.text);
                 appRouter.navigatorKey.currentContext!.router.back();
 
                 appRouter.navigatorKey.currentContext!

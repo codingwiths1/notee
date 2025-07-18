@@ -8,7 +8,6 @@ import 'package:notee/core/extention/extention.dart';
 import 'package:notee/core/theme/theme.dart';
 import 'package:notee/features/note/presentation/bloc/app_cubit.dart';
 import 'package:notee/features/note/presentation/bloc/app_state.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 @RoutePage()
 class EditNotePage extends StatelessWidget {
@@ -26,14 +25,15 @@ class EditNotePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextEditingController title = TextEditingController(text: titleText);
-
     final TextEditingController note = TextEditingController(text: noteText);
+    final AppCubit contxt = context.read<AppCubit>();
+
     return Scaffold(
       appBar: CupertinoNavigationBar(
         trailing: IconButton(
           onPressed: () async {
-            context.read<AppCubit>().updateState(delete: true);
-            await Supabase.instance.client.from("notes").delete().eq("id", id);
+            contxt.updateState(delete: true);
+            contxt.deletenote(id: id);
             appRouter.navigatorKey.currentContext!.router.back();
             appRouter.navigatorKey.currentContext!.read<AppCubit>().updateState(
               delete: false,
@@ -105,13 +105,8 @@ class EditNotePage extends StatelessWidget {
             onPressed: () async {
               if (title.text.trim().isNotEmpty || note.text.trim().isNotEmpty) {
                 context.read<AppCubit>().updateState(isTrue: true);
-                await Supabase.instance.client
-                    .from("notes")
-                    .update({
-                      "title": title.text.trim(),
-                      "note": note.text.trim(),
-                    })
-                    .eq("id", id);
+                contxt.editnote(title: title.text, note: note.text, id: id);
+
                 appRouter.navigatorKey.currentContext!.router.back();
                 appRouter.navigatorKey.currentContext!
                     .read<AppCubit>()
