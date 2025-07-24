@@ -1,7 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notee/features/note/presentation/note_bloc/note_state.dart';
+import 'package:notee/features/note/model/note_model.dart';
+import 'package:notee/features/note/view_model/note_bloc/note_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class NoteCubit extends Cubit<NoteState> {
@@ -18,7 +19,7 @@ class NoteCubit extends Cubit<NoteState> {
 
   final User? currentuser = Supabase.instance.client.auth.currentUser;
   int offset = 0;
-  static const int limit = 3;
+  static const int limit = 10;
 
   /// AUTH USERS
   Future<void> initAuth() async {
@@ -39,15 +40,18 @@ class NoteCubit extends Cubit<NoteState> {
         emit(state.copyWith(notelist: []));
       }
       // updateloaders(loadingnotes: true);
-      final List<Map<String, dynamic>> list = await Supabase.instance.client
+      final List<Map<String, dynamic>> response = await Supabase.instance.client
           .from("notes")
           .select()
           .eq("user_id", currentuser!.id)
           .order("id", ascending: true)
           .range(offset, offset + limit - 1);
-      offset += limit;
+      List<NoteModel> notes = response
+          .map((json) => NoteModel.fromJson(json))
+          .toList();
 
-      emit(state.copyWith(notelist: [...state.notelist, ...list]));
+      offset += limit;
+      emit(state.copyWith(notelist: [...state.notelist, ...notes]));
     } catch (e) {
       log("ERROR");
     } finally {

@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notee/app_widget.dart';
 import 'package:notee/core/extention/extention.dart';
 import 'package:notee/core/theme/theme.dart';
-import 'package:notee/features/note/presentation/note_bloc/note_cubit.dart';
-import 'package:notee/features/note/presentation/note_bloc/note_state.dart';
+import 'package:notee/features/note/view_model/note_bloc/note_cubit.dart';
+import 'package:notee/features/note/view_model/note_bloc/note_state.dart';
 
 @RoutePage()
 class CreateNotePage extends StatelessWidget {

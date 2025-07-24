@@ -1,5 +1,7 @@
+import 'package:notee/features/note/model/note_model.dart';
+
 class NoteState {
-  final List<Map<String, dynamic>> notelist;
+  final List<NoteModel> notelist;
   final bool loading;
   final bool delete;
   final bool loadingnotes;
@@ -14,7 +16,7 @@ class NoteState {
   });
 
   NoteState copyWith({
-    List<Map<String, dynamic>>? notelist,
+    List<NoteModel>? notelist,
     bool? loading,
     bool? delete,
     bool? loadingnotes,

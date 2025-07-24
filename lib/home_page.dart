@@ -8,8 +8,8 @@ import 'package:notee/core/extention/extention.dart';
 import 'package:notee/core/router/app_router.dart';
 import 'package:notee/core/theme/theme.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:notee/features/note/presentation/note_bloc/note_cubit.dart';
-import 'package:notee/features/note/presentation/note_bloc/note_state.dart';
+import 'package:notee/features/note/view_model/note_bloc/note_cubit.dart';
+import 'package:notee/features/note/view_model/note_bloc/note_state.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -158,10 +158,10 @@ class _HomePageState extends State<HomePage> {
 
                             itemBuilder: (context, index) {
                               final String titleText =
-                                  state.notelist[index]["title"] ?? "";
+                                  state.notelist[index].title;
                               final String noteText =
-                                  state.notelist[index]["note"] ?? "";
-                              final int id = state.notelist[index]["id"];
+                                  state.notelist[index].note;
+                              final int id = state.notelist[index].id;
                               return InkWell(
                                 onTap: () => context.router.push(
                                   EditNoteRoute(
