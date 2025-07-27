@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notee/core/pagination/custom_pagination.dart';
 import 'package:notee/features/note/model/note_model.dart';
 import 'package:notee/features/note/view_model/note_bloc/note_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -18,7 +19,7 @@ class NoteCubit extends Cubit<NoteState> {
       );
 
   final User? currentuser = Supabase.instance.client.auth.currentUser;
-  int offset = 0;
+  final int offset = 0;
   static const int limit = 10;
 
   /// AUTH USERS
@@ -36,21 +37,28 @@ class NoteCubit extends Cubit<NoteState> {
   Future<void> fetchnotes({bool isRefresh = false}) async {
     try {
       if (isRefresh) {
-        offset = 0;
         emit(state.copyWith(notelist: []));
       }
       // updateloaders(loadingnotes: true);
+      // pagination = CustomPagination(
+      //   fetchdata: (offset, limit) async {
+
+      //   },
+      // );
+
       final List<Map<String, dynamic>> response = await Supabase.instance.client
           .from("notes")
           .select()
           .eq("user_id", currentuser!.id)
           .order("id", ascending: true)
           .range(offset, offset + limit - 1);
-      List<NoteModel> notes = response
+      List<Map<String, dynamic>> fetchednotes = List<Map<String, dynamic>>.from(
+        response,
+      );
+      List<NoteModel> notes = fetchednotes
           .map((json) => NoteModel.fromJson(json))
           .toList();
 
-      offset += limit;
       emit(state.copyWith(notelist: [...state.notelist, ...notes]));
     } catch (e) {
       log("ERROR");
