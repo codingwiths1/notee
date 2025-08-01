@@ -21,12 +21,11 @@ void main() async {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indka29jdHFsa212dW5tdXJ3YWFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI2NzQyMzcsImV4cCI6MjA2ODI1MDIzN30.DQ6PSfwN9SwJPatHvYKNLmrlC7iSulfMMHPZGbPNYzc",
   );
 
-  /// INIT AUTH
-  final NoteRepo appRepo = NoteRepo(client: Supabase.instance.client);
-  await appRepo.initAuth();
-
   /// GET IT DEPENDENCIES
   configureDependencies();
+
+  /// INIT AUTH
+  getIt<NoteRepo>().initAuth();
 
   /// RUN APP
   runApp(const AppWidget());
