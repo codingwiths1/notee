@@ -2,12 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:notee/app_widget.dart';
+import 'package:notee/core/di/di.dart';
 import 'package:notee/core/extention/extention.dart';
 import 'package:notee/core/theme/theme.dart';
 import 'package:notee/features/note/view_model/note_bloc/note_cubit.dart';
 import 'package:notee/features/note/view_model/note_bloc/note_state.dart';
+import 'package:notee/features/note/view_model/repo/note_repo.dart';
 
 @RoutePage()
 class EditNotePage extends StatelessWidget {
@@ -26,26 +27,15 @@ class EditNotePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextEditingController title = TextEditingController(text: titleText);
     final TextEditingController note = TextEditingController(text: noteText);
-    final NoteCubit contxt = context.read<NoteCubit>();
 
     return Scaffold(
       appBar: CupertinoNavigationBar(
         trailing: IconButton(
           onPressed: () async {
-            contxt.deletenote(id: id);
+            getIt<NoteRepo>().deleteNote(id: id);
             appRouter.navigatorKey.currentContext!.router.back();
           },
-          icon: BlocBuilder<NoteCubit, NoteState>(
-            builder: (context, state) {
-              return state.delete
-                  ? SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(color: AppColor.blue),
-                    )
-                  : Icon(Iconsax.trash, size: 27, color: AppColor.red);
-            },
-          ),
+          icon: Icon(Icons.delete_forever, size: 27, color: AppColor.red),
         ),
         transitionBetweenRoutes: true,
         automaticallyImplyLeading: true,
@@ -100,7 +90,11 @@ class EditNotePage extends StatelessWidget {
             foregroundColor: AppColor.white,
             onPressed: () async {
               if (title.text.trim().isNotEmpty || note.text.trim().isNotEmpty) {
-                contxt.editnote(title: title.text, note: note.text, id: id);
+                getIt<NoteRepo>().editnote(
+                  newTitle: title.text,
+                  newNote: note.text,
+                  id: id,
+                );
 
                 appRouter.navigatorKey.currentContext!.router.back();
               }

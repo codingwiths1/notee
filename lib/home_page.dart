@@ -30,7 +30,7 @@ class HomePage extends StatelessWidget {
               context.read<NoteCubit>().state.pagingController.refresh();
             },
             child: PagedListView<int, NoteModel>(
-              physics: const BouncingScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(),
               pagingController: pagination.pagingController,
               builderDelegate: PagedChildBuilderDelegate<NoteModel>(
                 noItemsFoundIndicatorBuilder: (context) => SizedBox(

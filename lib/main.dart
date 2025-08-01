@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:notee/app_widget.dart';
+import 'package:notee/core/di/di.dart';
 import 'package:notee/core/theme/theme.dart';
-import 'package:notee/features/note/view_model/note_bloc/note_cubit.dart';
+import 'package:notee/features/note/view_model/repo/note_repo.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -21,8 +22,11 @@ void main() async {
   );
 
   /// INIT AUTH
-  final NoteCubit appcubit = NoteCubit();
-  await appcubit.initAuth();
+  final NoteRepo appRepo = NoteRepo(client: Supabase.instance.client);
+  await appRepo.initAuth();
+
+  /// GET IT DEPENDENCIES
+  configureDependencies();
 
   /// RUN APP
   runApp(const AppWidget());

@@ -18,6 +18,7 @@ class AppWidget extends StatelessWidget {
         minTextAdapt: true,
         splitScreenMode: true,
         child: MaterialApp.router(
+          theme: ThemeData(useMaterial3: true),
           routerConfig: appRouter.config(),
           debugShowCheckedModeBanner: false,
         ),
