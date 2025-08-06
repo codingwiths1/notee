@@ -11,7 +11,7 @@ class NoteCubit extends Cubit<NoteState> {
           loadmore: false,
           pagingController: CustomPagination(
             fetchData: (offset, limit) async {
-              return await getIt<NoteRepoIMpl>().fetchNotes(offset, limit);
+              return await getIt<NoteRepo>().fetchNotes(offset, limit);
             },
           ),
           loading: false,
