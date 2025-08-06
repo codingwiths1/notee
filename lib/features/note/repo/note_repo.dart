@@ -4,14 +4,31 @@ import 'package:injectable/injectable.dart';
 import 'package:notee/features/note/model/note_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-@lazySingleton
-class NoteRepo {
+abstract interface class NoteRepo {
+  Future<void> initAuth();
+  Future<List<NoteModel>> fetchNotes(int offset, int limit);
+  Future<void> editnote({
+    required int id,
+    required String newTitle,
+    required String newNote,
+  });
+  Future<void> addNote({
+    required int id,
+    required String newTitle,
+    required String newNote,
+  });
+  Future<void> deleteNote({required int id});
+}
+
+@Injectable(as: NoteRepo)
+class NoteRepoIMpl implements NoteRepo {
   final SupabaseClient client;
   final User? currentuser;
 
-  NoteRepo({required this.client}) : currentuser = client.auth.currentUser;
+  NoteRepoIMpl({required this.client}) : currentuser = client.auth.currentUser;
 
   /// AUTH USERS
+  @override
   Future<void> initAuth() async {
     final Session? currentsession =
         Supabase.instance.client.auth.currentSession;
@@ -23,6 +40,7 @@ class NoteRepo {
   }
 
   /// READ
+  @override
   Future<List<NoteModel>> fetchNotes(int offset, int limit) async {
     try {
       final list = await client
@@ -39,6 +57,7 @@ class NoteRepo {
   }
 
   /// UPDATE
+  @override
   Future<void> editnote({
     required int id,
     required String newTitle,
@@ -53,6 +72,7 @@ class NoteRepo {
   }
 
   /// CREATE
+  @override
   Future<void> addNote({
     required int id,
     required String newTitle,
@@ -63,10 +83,11 @@ class NoteRepo {
       note: newNote,
       id: id,
     );
-    await client.from("notes").insert(toJson(noteModel.toJson()));
+    await client.from("notes").insert(noteModel.toJson());
   }
 
   /// DELETE
+  @override
   Future<void> deleteNote({required int id}) async {
     await client.from("notes").delete().eq("id", id);
   }

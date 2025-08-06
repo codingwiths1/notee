@@ -8,13 +8,12 @@ import 'package:notee/core/extention/extention.dart';
 import 'package:notee/core/theme/theme.dart';
 import 'package:notee/features/note/view_model/note_bloc/note_cubit.dart';
 import 'package:notee/features/note/view_model/note_bloc/note_state.dart';
-import 'package:notee/features/note/view_model/repo/note_repo.dart';
+import 'package:notee/features/note/repo/note_repo.dart';
 
 @RoutePage()
 class CreateNotePage extends StatelessWidget {
   const CreateNotePage({super.key});
 
-  @override
   @override
   Widget build(BuildContext context) {
     final TextEditingController title = TextEditingController();

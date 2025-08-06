@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:notee/app_widget.dart';
 import 'package:notee/core/di/di.dart';
 import 'package:notee/core/theme/theme.dart';
-import 'package:notee/features/note/view_model/repo/note_repo.dart';
+import 'package:notee/features/note/repo/note_repo.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -25,7 +25,7 @@ void main() async {
   configureDependencies();
 
   /// INIT AUTH
-  getIt<NoteRepo>().initAuth();
+  await getIt<NoteRepo>().initAuth();
 
   /// RUN APP
   runApp(const AppWidget());
