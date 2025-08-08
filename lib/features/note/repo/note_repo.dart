@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:injectable/injectable.dart';
 import 'package:notee/features/note/model/note_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -12,15 +10,11 @@ abstract interface class NoteRepo {
     required String newTitle,
     required String newNote,
   });
-  Future<void> addNote({
-    required int id,
-    required String newTitle,
-    required String newNote,
-  });
+  Future<void> addNote({required String newTitle, required String newNote});
   Future<void> deleteNote({required int id});
 }
 
-@Injectable(as: NoteRepo)
+@LazySingleton(as: NoteRepo)
 class NoteRepoIMpl implements NoteRepo {
   final SupabaseClient client;
   final User? currentuser;
@@ -35,13 +29,15 @@ class NoteRepoIMpl implements NoteRepo {
 
     if (currentsession == null) {
       await Supabase.instance.client.auth.signInAnonymously();
-      log("signInAnonymously INITIALIZED");
     }
   }
 
   /// READ
   @override
   Future<List<NoteModel>> fetchNotes(int offset, int limit) async {
+    if (currentuser == null) {
+      throw Exception("User not authenticated");
+    }
     try {
       final list = await client
           .from("notes")
@@ -63,32 +59,35 @@ class NoteRepoIMpl implements NoteRepo {
     required String newTitle,
     required String newNote,
   }) async {
-    final NoteModel noteModel = NoteModel(
-      title: newTitle,
-      note: newNote,
-      id: id,
-    );
-    await client.from("notes").update(toJson(noteModel.toJson()));
+    await client
+        .from("notes")
+        .update({"title": newTitle, "note": newNote})
+        .eq("user_id", currentuser!.id)
+        .eq("id", id);
   }
 
   /// CREATE
   @override
   Future<void> addNote({
-    required int id,
     required String newTitle,
     required String newNote,
   }) async {
-    final NoteModel noteModel = NoteModel(
-      title: newTitle,
-      note: newNote,
-      id: id,
-    );
-    await client.from("notes").insert(noteModel.toJson());
+    print("Current user ID: ${currentuser!.id}");
+
+    await client.from("notes").insert({
+      "title": newTitle,
+      "note": newNote,
+      "user_id": currentuser!.id,
+    });
   }
 
   /// DELETE
   @override
   Future<void> deleteNote({required int id}) async {
-    await client.from("notes").delete().eq("id", id);
+    await client
+        .from("notes")
+        .delete()
+        .eq("user_id", currentuser!.id)
+        .eq("id", id);
   }
 }

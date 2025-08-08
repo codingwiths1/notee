@@ -2,15 +2,25 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:notee/core/pagination/custom_pagination.dart';
 import 'package:notee/core/router/app_router.dart';
 import 'package:notee/core/theme/theme.dart';
 import 'package:notee/features/note/model/note_model.dart';
 import 'package:notee/features/note/view_model/note_bloc/note_cubit.dart';
-import 'package:notee/features/note/view_model/note_bloc/note_state.dart';
 
 @RoutePage()
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +31,7 @@ class HomePage extends StatelessWidget {
         elevation: 0,
         scrolledUnderElevation: 0,
       ),
-      body: BlocBuilder<NoteCubit, NoteState>(
+      body: BlocBuilder<NoteCubit, CustomPagination<NoteModel>>(
         builder: (context, state) {
           final pagination = state.pagingController;
 
@@ -31,7 +41,7 @@ class HomePage extends StatelessWidget {
             },
             child: PagedListView<int, NoteModel>(
               physics: const AlwaysScrollableScrollPhysics(),
-              pagingController: pagination.pagingController,
+              pagingController: pagination,
               builderDelegate: PagedChildBuilderDelegate<NoteModel>(
                 noItemsFoundIndicatorBuilder: (context) => SizedBox(
                   height: MediaQuery.of(context).size.height,

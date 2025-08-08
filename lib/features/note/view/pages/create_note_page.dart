@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,10 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notee/app_widget.dart';
 import 'package:notee/core/di/di.dart';
 import 'package:notee/core/extention/extention.dart';
+import 'package:notee/core/pagination/custom_pagination.dart';
 import 'package:notee/core/theme/theme.dart';
+import 'package:notee/features/note/model/note_model.dart';
 import 'package:notee/features/note/view_model/note_bloc/note_cubit.dart';
-import 'package:notee/features/note/view_model/note_bloc/note_state.dart';
 import 'package:notee/features/note/repo/note_repo.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 @RoutePage()
 class CreateNotePage extends StatelessWidget {
@@ -66,7 +70,7 @@ class CreateNotePage extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: BlocBuilder<NoteCubit, NoteState>(
+      floatingActionButton: BlocBuilder<NoteCubit, CustomPagination<NoteModel>>(
         builder: (context, state) {
           return FloatingActionButton(
             shape: const CircleBorder(),
@@ -75,21 +79,20 @@ class CreateNotePage extends StatelessWidget {
             foregroundColor: AppColor.white,
             onPressed: () async {
               if (title.text.trim().isNotEmpty || note.text.trim().isNotEmpty) {
-                getIt<NoteRepo>().addNote(
-                  id: 0,
+                final currentUserId =
+                    getIt<SupabaseClient>().auth.currentUser?.id;
+
+                if (currentUserId == null) {
+                  log("No User Signed In");
+                }
+                await getIt<NoteRepo>().addNote(
                   newTitle: title.text,
                   newNote: note.text,
                 );
                 appRouter.navigatorKey.currentContext!.router.back();
               }
             },
-            child: state.loading
-                ? SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(color: AppColor.white),
-                  )
-                : const Icon(Icons.done),
+            child: const Icon(Icons.done),
           );
         },
       ),

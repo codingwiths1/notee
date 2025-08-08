@@ -1,22 +1,16 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notee/core/di/di.dart';
 import 'package:notee/core/pagination/custom_pagination.dart';
-import 'package:notee/features/note/view_model/note_bloc/note_state.dart';
+import 'package:notee/features/note/model/note_model.dart';
 import 'package:notee/features/note/repo/note_repo.dart';
 
-class NoteCubit extends Cubit<NoteState> {
+class NoteCubit extends Cubit<CustomPagination<NoteModel>> {
   NoteCubit()
     : super(
-        NoteState(
-          loadmore: false,
-          pagingController: CustomPagination(
-            fetchData: (offset, limit) async {
-              return await getIt<NoteRepoIMpl>().fetchNotes(offset, limit);
-            },
-          ),
-          loading: false,
-          delete: false,
-          loadingnotes: false,
+        CustomPagination(
+          fetchData: (offset, limit) async {
+            return await getIt<NoteRepo>().fetchNotes(offset, limit);
+          },
         ),
       );
 

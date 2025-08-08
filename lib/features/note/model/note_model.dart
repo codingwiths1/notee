@@ -13,7 +13,7 @@ class NoteModel {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {"id": id, "note": note, "title": title};
-  }
+  // Map<String, dynamic> toJson() {
+  //   return {"id": id, "note": note, "title": title};
+  // }
 }
